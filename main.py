@@ -22,14 +22,15 @@ def returnRange(sheets, tLeft, bRight, sheetName="Sheet1"):
     values = result.get("values", [])
     return values
 
+
 def returnCell(sheets, cell, sheetName="Sheet1"):
     result = (
-        sheets.values()
-        .get(spreadsheetId=ID, range=f"{sheetName}!{cell}")
-        .execute()
+        sheets.values().get(spreadsheetId=ID, range=f"{sheetName}!{cell}").execute()
     )
     value = result.get("values", [])
     return value[0][0]
+
+
 # ====================  Edit  ====================
 def editRange(sheets, tLeft, bRight, valueArray, sheetName="Sheet1"):
     sheets.values().update(
@@ -42,6 +43,7 @@ def editRange(sheets, tLeft, bRight, valueArray, sheetName="Sheet1"):
     print(f"updated {sheetName}!{tLeft}:{bRight} with {valueArray}")
     return
 
+
 def editCell(sheets, cell, value, sheetName="Sheet1"):
     sheets.values().update(
         spreadsheetId=ID,
@@ -52,7 +54,10 @@ def editCell(sheets, cell, value, sheetName="Sheet1"):
 
     print(f"updated {sheetName}!{cell} with {value}")
     return
+
+
 # =============================================
+
 
 def main():
     credentials = None
