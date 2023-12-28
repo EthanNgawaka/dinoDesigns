@@ -11,7 +11,8 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 ID = "1h72EMpxbpnBPsyGRuaACVipCjezudQkoP7a4lXfdEVw"
 
 
-def searchSheet(sheets, tLeft, bRight, sheetName="Sheet1"):
+# ==================== Return ====================
+def returnRange(sheets, tLeft, bRight, sheetName="Sheet1"):
     result = (
         sheets.values()
         .get(spreadsheetId=ID, range=f"{sheetName}!{tLeft}:{bRight}")
@@ -21,8 +22,16 @@ def searchSheet(sheets, tLeft, bRight, sheetName="Sheet1"):
     values = result.get("values", [])
     return values
 
-
-def editSheet(sheets, tLeft, bRight, valueArray, sheetName="Sheet1"):
+def returnCell(sheets, cell, sheetName="Sheet1"):
+    result = (
+        sheets.values()
+        .get(spreadsheetId=ID, range=f"{sheetName}!{cell}")
+        .execute()
+    )
+    value = result.get("values", [])
+    return value[0][0]
+# ====================  Edit  ====================
+def editRange(sheets, tLeft, bRight, valueArray, sheetName="Sheet1"):
     sheets.values().update(
         spreadsheetId=ID,
         range=f"{sheetName}!{tLeft}:{bRight}",
@@ -33,6 +42,17 @@ def editSheet(sheets, tLeft, bRight, valueArray, sheetName="Sheet1"):
     print(f"updated {sheetName}!{tLeft}:{bRight} with {valueArray}")
     return
 
+def editCell(sheets, cell, value, sheetName="Sheet1"):
+    sheets.values().update(
+        spreadsheetId=ID,
+        range=f"{sheetName}!{cell}",
+        valueInputOption="USER_ENTERED",
+        body={"values": [[value]]},
+    ).execute()
+
+    print(f"updated {sheetName}!{cell} with {value}")
+    return
+# =============================================
 
 def main():
     credentials = None
@@ -51,8 +71,8 @@ def main():
         service = build("sheets", "v4", credentials=credentials)
         sheets = service.spreadsheets()
 
-        print(searchSheet(sheets, "B2", "C7"))
-        editSheet(
+        print(returnRange(sheets, "B2", "C7"))
+        editRange(
             sheets,
             "D2",
             "E7",
@@ -65,6 +85,10 @@ def main():
                 ["60", "F"],
             ],
         )
+        print(returnCell(sheets, "D6"))
+        editCell(sheets, "D6", "51")
+        print(returnCell(sheets, "D6"))
+        print(returnRange(sheets, "B2", "E7"))
 
     except HttpError as err:
         print(err)
