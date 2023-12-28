@@ -1,0 +1,7 @@
+# dev requirements
+
+flake8
+black
+isort
+pymarkdownlnt
+
